@@ -4,7 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const AppError = require("./utils/appError");
-const globalErrorHandler = require('./controllers/errorController');
+const globalErrorHandler = require("./controllers/errorController");
 const tutorialRouter = require("./routes/tutorialRoutes");
 const userRouter = require("./routes/userRoutes");
 
@@ -30,7 +30,6 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
 
 app.use("/api/v1/tutorials", tutorialRouter);
 app.use("/api/v1/users", userRouter);
