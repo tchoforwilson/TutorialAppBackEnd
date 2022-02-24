@@ -11,11 +11,13 @@ exports.getAllTutorials = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate()
     .like();
+    const totalDoc = await Tutorial.countDocuments();
   const tutorials = await features.query;
   // SEND RESPONSE
   res.status(200).json({
     status: "success",
     results: tutorials.length,
+    total: totalDoc,
     data: {
       tutorials,
     },
@@ -40,7 +42,7 @@ exports.getTutorial = catchAsync(async (req, res, next) => {
 exports.getTutorialPublished = catchAsync(async (req, res, next) => {
   const tutorials = await Tutorial.find({ published: true });
   if (!tutorials) {
-    return next(new AppError("No tutorials publihed", 404));
+    return next(new AppError("No tutorials published", 404));
   }
 
   res.status(200).json({
@@ -91,7 +93,7 @@ exports.deleteTutorial = catchAsync(async (req, res, next) => {
   const tutorial = await Tutorial.findByIdAndDelete(req.params.id);
 
   if (!tutorial) {
-    return next(new AppError("No tutorial found with that ID", 404));
+    return next(new AppError("No tutorial found with this ID!", 404));
   }
 
   res.status(204).json({

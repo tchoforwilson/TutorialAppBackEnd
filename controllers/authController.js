@@ -29,10 +29,10 @@ const createSendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
-    httpOnly: false
+    httpOnly: true
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-
+   
   res.cookie('jwt', token, cookieOptions);
 
   // Remove password from output
@@ -210,7 +210,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // 7) If so, update password
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
-  await user.save({validaeBeforeSave:true});
+  await user.save({validateBeforeSave:true});
   // User.findByIdAndUpdate will NOT work as intended!
 
   // 8) Log user in, send JWT

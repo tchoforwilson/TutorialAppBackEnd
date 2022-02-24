@@ -54,10 +54,18 @@ class APIFeatures {
 
   // like
   like() {
+    let condition;
     if (this.queryString.title) {
       let title = this.queryString.title;
-      const condition = title
+      condition = title
         ? { title: { $regex: new RegExp(title), $options: "i" } }
+        : {};
+      this.query = this.query.find(condition);
+    }
+        if (this.queryString.name) {
+      let name = this.queryString.name;
+      condition = name
+        ? { name: { $regex: new RegExp(name), $options: "i" } }
         : {};
       this.query = this.query.find(condition);
     }
