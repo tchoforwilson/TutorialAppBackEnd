@@ -2,6 +2,7 @@ const Tutorial = require("./../models/tutorialModel");
 const APIFeatures = require("./../utils/apiFeatures");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/catchAsync");
+const factory = require("./handleFactory");
 
 exports.getAllTutorials = catchAsync(async (req, res, next) => {
   // EXECUTE THE QUERY
@@ -11,7 +12,7 @@ exports.getAllTutorials = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate()
     .like();
-    const totalDoc = await Tutorial.countDocuments();
+  const totalDoc = await Tutorial.countDocuments();
   const tutorials = await features.query;
   // SEND RESPONSE
   res.status(200).json({
@@ -24,20 +25,24 @@ exports.getAllTutorials = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTutorial = catchAsync(async (req, res, next) => {
-  const tutorial = await Tutorial.findById(req.params.id);
-  // const tour = await Tour.findOne({_id: req.params.id})
+//exports.getAllTutorials = factory.getAll(Tutorial);
 
-  if (!tutorial) {
-    return next(new AppError("No tutorial found with that ID", 404));
-  }
-  res.status(200).json({
-    status: "success",
-    data: {
-      tutorial,
-    },
-  });
-});
+// exports.getTutorial = catchAsync(async (req, res, next) => {
+//   const tutorial = await Tutorial.findById(req.params.id);
+//   // const tour = await Tour.findOne({_id: req.params.id})
+
+//   if (!tutorial) {
+//     return next(new AppError("No tutorial found with that ID", 404));
+//   }
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       tutorial,
+//     },
+//   });
+// });
+
+exports.getTutorial = factory.getOne(Tutorial);
 
 exports.getTutorialPublished = catchAsync(async (req, res, next) => {
   const tutorials = await Tutorial.find({ published: true });
@@ -54,55 +59,61 @@ exports.getTutorialPublished = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createTutorial = catchAsync(async (req, res, next) => {
-  // 1. Check if there is a title and a description
-  const {title, description} = req.body;
-  if(!title || !description){
-  return next(new AppError("Please provide title and description", 400));
-  }
-  // 2. Add tutorial to the database
-  const newTutorial = await Tutorial.create({title, description});
+// exports.createTutorial = catchAsync(async (req, res, next) => {
+//   // 1. Check if there is a title and a description
+//   const { title, description } = req.body;
+//   if (!title || !description) {
+//     return next(new AppError("Please provide title and description", 400));
+//   }
+//   // 2. Add tutorial to the database
+//   const newTutorial = await Tutorial.create({ title, description });
 
-  res.status(201).json({
-    status: "success",
-    data: {
-      tutorial: newTutorial,
-    },
-  });
-});
+//   res.status(201).json({
+//     status: "success",
+//     data: {
+//       tutorial: newTutorial,
+//     },
+//   });
+// });
 
-exports.updateTutorial = catchAsync(async (req, res, next) => {
-  const tutorial = await Tutorial.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+exports.createTutorial = factory.createOne(Tutorial);
 
-  if (!tutorial) {
-    return next(new AppError("No tutorial found with that ID", 404));
-  }
+// exports.updateTutorial = catchAsync(async (req, res, next) => {
+//   const tutorial = await Tutorial.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      tutorial,
-    },
-  });
-});
+//   if (!tutorial) {
+//     return next(new AppError("No tutorial found with that ID", 404));
+//   }
 
-exports.deleteTutorial = catchAsync(async (req, res, next) => {
-  const tutorial = await Tutorial.findByIdAndDelete(req.params.id);
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       tutorial,
+//     },
+//   });
+// });
 
-  if (!tutorial) {
-    return next(new AppError("No tutorial found with this ID!", 404));
-  }
+exports.updateTutorial = factory.updateOne(Tutorial);
 
-  res.status(204).json({
-    status: "success",
-    data: {
-      data: null,
-    },
-  });
-});
+// exports.deleteTutorial = catchAsync(async (req, res, next) => {
+//   const tutorial = await Tutorial.findByIdAndDelete(req.params.id);
+
+//   if (!tutorial) {
+//     return next(new AppError("No tutorial found with this ID!", 404));
+//   }
+
+//   res.status(204).json({
+//     status: "success",
+//     data: {
+//       data: null,
+//     },
+//   });
+// });
+
+exports.deleteTutorial = factory.deleteOne(Tutorial);
 
 exports.deleteAllTutorial = catchAsync(async (req, res, next) => {
   const tutorials = await Tutorial.deleteMany({});

@@ -1,6 +1,6 @@
-const catchAsync = require("./../utils/catchAsync");
-const AppError = require("./../utils/appError");
-const APIFeatures = require("./../utils/apiFeatures");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
+const APIFeatures = require("../utils/apiFeatures");
 
 /**
  * Delete a single documents from the database
@@ -93,12 +93,13 @@ exports.getOne = (Model, popOptions) =>
  */
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
+    // EXECUTE THE QUERY
     const features = new APIFeatures(Model.find(), req.query)
       .filter()
       .sort()
       .limitFields()
-      .paginate();
-    // const doc = await features.query.explain();
+      .paginate()
+      .like();
     const doc = await features.query;
 
     // SEND RESPONSE

@@ -4,11 +4,11 @@ const authController = require("./../controllers/authController");
 
 const router = express.Router();
 
+router.use(authController.protect);
 router
   .route("/")
   .get(tutorialController.getAllTutorials)
   .post(
-    authController.protect,
     authController.restrictTo("admin", "publisher"),
     tutorialController.createTutorial
   );
@@ -17,12 +17,10 @@ router
   .route("/:id")
   .get(tutorialController.getTutorial)
   .patch(
-    authController.protect,
     authController.restrictTo("admin", "publisher"),
     tutorialController.updateTutorial
   )
   .delete(
-    authController.protect,
     authController.restrictTo("admin", "publisher"),
     tutorialController.deleteTutorial
   );
